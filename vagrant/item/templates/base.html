@@ -2,16 +2,61 @@
 <html>
 <head>
     <title>Catalog App</title>
+    <meta charset="utf-8">
+    <link href="https://fonts.googleapis.com/css?family=Aref+Ruqaa|Space+Mono" rel="stylesheet">
+    <link rel="stylesheet" href="{{url_for('static', filename='main.css')}}">
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+    <script src="//apis.google.com/js/platform.js?onload=start"></script>
 </head>
 <body>
     <nav>
-        <div><h2>Catalog App</h2></div>
-        <a href="#">Login</a>
+        <div class="header-title">
+            <a href="{{url_for('main')}}">Catalog App</a>
+        </div>
+        <!-- <a class="login-button" href="">Login</a> -->
+        <div id="signInButton" class="google-login">
+          <span class="g-signin"
+            data-scope="openid email"
+            data-clientid="284746593037-tfs9gn70otg17s8c0g9pb7jdqegobrqb.apps.googleusercontent.com"
+            data-redirecturi="postmessage"
+            data-accesstype="offline"
+            data-cookiepolicy="single_host_origin"
+            data-callback="signInCallback"
+            data-approvalprompt="force">
+          </span>
+        </div>
+        <div id='result'></div>
+        <script>
+            function signInCallback(authResult) {
+                if (authResult['code']) {
+                    $('#signInButton').attr('style', 'display: none');
+                    $.ajax({
+                        type: 'POST',
+                        url: '/gconnect?state={{STATE}}',
+                        processData: false,
+                        contentType: 'application/octet-stream; charset=utf-8',
+                        success: function(result) {
+                            if (result) {
+                                $('#result').html('Login Successful!</br>'+result+'</br>Redirecting...')
+                                setTimeout(function(){
+                                    window.location.href="/";
+
+                                }, 4000);
+                            } else if(authResult['error']) {
+                                console.log('There was an error: '+ authResult['error']);
+                            } else {
+                                $('#result').html('Failed to make a server side call. check your confirmation and console')
+                            }
+                        }
+                    });
+                }
+            }
+        </script>
     </nav>
-    <div>
-        
+    <div class="main">
+        {%block content%}{%endblock%}    
     </div>
-    {%block content%}{%endblock%}
+    
 
 </body>
 </html>

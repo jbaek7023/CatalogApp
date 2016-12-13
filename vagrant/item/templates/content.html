@@ -1,7 +1,12 @@
 {%extends "base.html"%}{%block content%}
-    
+<div class="content-style">
     <h3>{{item.item}}</h3>
     <hr>
     <div>{{item.content}}</div>
+
     
+    <div class="edit-delete">
+        <a href="{{url_for('editItem', item= item.item)}}">Edit</a> | <a href="{{url_for('deleteItem', item= item.item)}}">Delete</a>
+    </div>
+</div>
 {%endblock%}
