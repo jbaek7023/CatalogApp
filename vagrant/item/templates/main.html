@@ -1,4 +1,17 @@
 {%extends "base.html"%}{%block content%}
+<!-- <div class="flask">
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul>
+            {% for message in messages %}
+                <li> <strong> {{ message }} </strong> </li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %} 
+</div>
+ -->
+
 <div class="category-style">
     <h3>Categories</h3>
     {%for c in categories%}

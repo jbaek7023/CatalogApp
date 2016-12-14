@@ -4,6 +4,15 @@
     <hr>
     <div>{{item.content}}</div>
 
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul>
+            {% for message in messages %}
+                <li style="color:red"> <strong> {{ message }} </strong> </li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
     
     <div class="edit-delete">
         <a href="{{url_for('editItem', item= item.item)}}">Edit</a> | <a href="{{url_for('deleteItem', item= item.item)}}">Delete</a>

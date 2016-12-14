@@ -12,47 +12,14 @@
     <nav>
         <div class="header-title">
             <a href="{{url_for('main')}}">Catalog App</a>
+            <a id="login-button" href="{{url_for('showLogin')}}">Login</a>
+            <a href="{{url_for('gdisconnect')}}">Logout</a>
         </div>
         <!-- <a class="login-button" href="">Login</a> -->
-        <div id="signInButton" class="google-login">
-          <span class="g-signin"
-            data-scope="openid email"
-            data-clientid="284746593037-tfs9gn70otg17s8c0g9pb7jdqegobrqb.apps.googleusercontent.com"
-            data-redirecturi="postmessage"
-            data-accesstype="offline"
-            data-cookiepolicy="single_host_origin"
-            data-callback="signInCallback"
-            data-approvalprompt="force">
-          </span>
-        </div>
-        <div id='result'></div>
-        <script>
-            function signInCallback(authResult) {
-                if (authResult['code']) {
-                    $('#signInButton').attr('style', 'display: none');
-                    $.ajax({
-                        type: 'POST',
-                        url: '/gconnect?state={{STATE}}',
-                        processData: false,
-                        contentType: 'application/octet-stream; charset=utf-8',
-                        success: function(result) {
-                            if (result) {
-                                $('#result').html('Login Successful!</br>'+result+'</br>Redirecting...')
-                                setTimeout(function(){
-                                    window.location.href="/";
-
-                                }, 4000);
-                            } else if(authResult['error']) {
-                                console.log('There was an error: '+ authResult['error']);
-                            } else {
-                                $('#result').html('Failed to make a server side call. check your confirmation and console')
-                            }
-                        }
-                    });
-                }
-            }
-        </script>
+        
     </nav>
+    
+
     <div class="main">
         {%block content%}{%endblock%}    
     </div>

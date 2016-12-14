@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, jsonify, url_for
+from flask import Flask, render_template, request, redirect, jsonify, url_for, flash
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from db_setup import Base, User, Item, Category
@@ -29,14 +29,13 @@ session = DBSession()
 def showLogin():
     state=''.join(random.choice(string.ascii_uppercase + string.digits) for x in xrange(32))
     login_session['state'] = state
-    return "Current session state is " + login_session['state']
+    return render_template('login.html', STATE=login_session['state'])
 
 
 @app.route('/')
 def main():
     categories = session.query(Category).all()
     items = session.query(Item).all()
-    
     return render_template('main.html', categories=categories, items=items)
 
 @app.route('/catalog/<string:category>/items')
@@ -55,6 +54,10 @@ def items(category_id, item):
 
 @app.route('/catalog/add', methods=['GET', 'POST'])
 def addItem():
+    if 'username' not in login_session:
+        flash("You have to login to add item")
+        return redirect('/login')
+
     if request.method == 'POST':
         category = request.form['category']
         
@@ -64,7 +67,7 @@ def addItem():
             category_id = category)
         session.add(newItem)
         session.commit()
-
+        flash("%s has been created" % request.form['title'])
         return redirect(url_for('catalog' , category = category))
     else:
         categories = session.query(Category).all()
@@ -72,6 +75,10 @@ def addItem():
 
 @app.route('/catalog/<string:item>/edit', methods=['GET', 'POST'])
 def editItem(item):
+    if 'username' not in login_session:
+        flash("You have to login to edit item")
+        return redirect('/login')
+
     categories = session.query(Category).all()
     editedItem = session.query(Item).filter_by(item=item).one()
 
@@ -82,12 +89,19 @@ def editItem(item):
             editedItem.content = request.form['description']
         if request.form['category']:
             editedItem.category_id = request.form['category']
+
+        flash("item '%s' has been edited" % request.form['title'])
+
         return redirect(url_for('items', category_id=request.form['category'], item=editedItem.item))
     else:
         return render_template('item_edit.html', categories=categories, item=editedItem)
 
 @app.route('/catalog/<string:item>/delete', methods=['GET', 'POST'])
 def deleteItem(item):
+    if 'username' not in login_session:
+        flash("You have to login to delete item")
+        return redirect('/login')
+
     if request.method == 'POST':
         item_elem = session.query(Item).filter_by(item=item).one()
             
@@ -95,6 +109,9 @@ def deleteItem(item):
 
         session.delete(item_elem)
         session.commit()
+
+        flash("item '%s' has been deleted" % item_elem.item)
+
         return redirect(
             url_for(
                 'catalog',
@@ -125,16 +142,13 @@ def gconnect():
         oauth_flow.redirect_uri = 'postmessage'
         credentials = oauth_flow.step2_exchange(code)
     except FlowExchangeError:
-
-        response = make_response(
-        json.dumps('Failed to upgrade the authorization code.'), 401)
+        response = make_response(json.dumps('Failed to upgrade the authorization code.'), 401)
         response.headers['Content-Type'] = 'application/json'
         return response
 
     # Check that the access token is valid.
     access_token = credentials.access_token
-    url = ('https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=%s'
-    % access_token)
+    url = ('https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=%s'% access_token)
     h = httplib2.Http()
     result = json.loads(h.request(url, 'GET')[1])
     # If there was an error in the access token info, abort.
@@ -167,7 +181,8 @@ def gconnect():
         return response
 
     # Store the access token in the session for later use.
-    login_session['credentials'] = credentials
+    # changed credientials -> credentials.access_token
+    login_session['credentials'] = credentials.access_token
     login_session['gplus_id'] = gplus_id
 
     # Get user info
@@ -188,9 +203,46 @@ def gconnect():
     output += '<img src="'
     output += login_session['picture']
     output += ' " style = "width: 300px; height: 300px;border-radius: 150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '
-    flash("you are now logged in as %s" % login_session['username'])
-    print "done!"
+    # flash("you are now logged in as %s" % login_session['username'])
     return output
+
+@app.route('/gdisconnect')
+def gdisconnect():
+    credentials_ = login_session.get('credentials')
+    
+    if credentials_ is None:
+        response = make_response(json.dumps('Current user is not connected.'), 401)
+        response.headers['Content-Type'] = 'application/json'
+        return response
+    
+    access_token = login_session['credentials'] 
+    url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % access_token
+    h = httplib2.Http()
+    result = h.request(url, 'GET')[0]
+
+    print result
+
+    if result['status'] =='200':
+        # Reset the user's session.
+        del login_session['credentials']
+        del login_session['gplus_id']
+        del login_session['username']
+        del login_session['email']
+        del login_session['picture']
+
+        response = make_response(json.dumps('Successfully Disconnected'), 200)
+        response.headers['Content-Type'] = 'application/json'
+        return response
+    else:
+        response = make_response('Failed to revoke token for given user', 400)
+        response.headers['Content-Type'] = 'application/json'
+        return response
+
+
+@app.route('/clear')
+def clearSession():
+    login_session.clear()
+    return "Session cleared"
 
 # Config Footer starts from here
 if __name__ == '__main__':

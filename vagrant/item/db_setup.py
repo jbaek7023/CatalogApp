@@ -25,18 +25,18 @@ class User(Base):
 
     id = Column(Integer, primary_key=True)
     uid = Column(String(250), nullable=False)
-    password = Column(String(250), nullable=False)
     name = Column(String(250), nullable=False)
     email = Column(String(250), nullable=False)
+    picture = Column(String(250), nullable=False)
 
     @property
     def serialize(self):
         """return object data in easily serializeable format"""
         return {
             'uid' : self.uid,
-            'password' : self.password,
             'name' : self.name,
             'email' : self.email,
+            'picture' :self.picture,
         }
 
 class Item(Base):

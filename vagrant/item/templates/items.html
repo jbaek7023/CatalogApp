@@ -10,6 +10,17 @@
     {%endfor%}
 </div>
 <div class="items-style">
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul>
+            {% for message in messages %}
+                <li> <strong> {{ message }} </strong> </li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+
+
     <h3>{{category}} Items ({{items.__len__()}} items)</h3>
     {%for item in items%}
         <div>
