@@ -24,7 +24,6 @@ class User(Base):
     __tablename__ = "user"
 
     id = Column(Integer, primary_key=True)
-    uid = Column(String(250), nullable=False)
     name = Column(String(250), nullable=False)
     email = Column(String(250), nullable=False)
     picture = Column(String(250), nullable=False)
@@ -33,7 +32,7 @@ class User(Base):
     def serialize(self):
         """return object data in easily serializeable format"""
         return {
-            'uid' : self.uid,
+            'id' : self.id,
             'name' : self.name,
             'email' : self.email,
             'picture' :self.picture,
@@ -49,7 +48,7 @@ class Item(Base):
     category_id = Column(Integer, ForeignKey('category.category'))
     category = relationship(Category)
 
-    user_id = Column(String(250), ForeignKey('user.uid'), nullable=True)
+    user_id = Column(String(250), ForeignKey('user.id'), nullable=True)
     user = relationship(User)
 
     @property
