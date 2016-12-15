@@ -18,9 +18,9 @@ $ pip install Flask-Login==0.1.3
 
 3. Open your terminal in the folder and type below 
 ```
-vagrant up
-vagrant ssh"
-cd /vagrant/project.py
+$ vagrant up
+$ vagrant ssh"
+$ cd /vagrant/project.py
 ```
 6. set up your database by typing "python db_setup.py"
 
