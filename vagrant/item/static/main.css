@@ -1,63 +1,61 @@
-/*Flask Automatically uploads this file*/
-html {
-
-}
 body {
     font-family: 'Space Mono', sans-serif;
 }
-
 nav {
     /*green 80%*/
+    
     background-color: #2d88b5;
     font-size: 20px;
     height: 50px;
 }
+a:link {
+    color: #000;
+}
+/* unvisited link  */
 
-a:link    {color:#000;}  /* unvisited link  */
-a:visited {color:#000;}  /* visited link    */
-a:hover   {color:#000;}  /* mouse over link */
-a:active  {color:#000;}  /* selected link   */
+a:visited {
+    color: #000;
+}
+/* visited link    */
+
+a:hover {
+    color: #000;
+}
+/* mouse over link */
+
+a:active {
+    color: #000;
+}
+/* selected link   */
 
 .category-header {
     border-bottom: 1px solid #2d88b5;
     margin-bottom: 10px;
     padding-left: 10px;
 }
-
 .content-header {
     border-bottom: 1px solid #2d88b5;
     padding-left: 10px;
     margin-bottom: 10px;
 }
-
 .top-margin {
     margin-bottom: 20px;
 }
-
-.google-login {
-
-}
-
-.header-title {
+.google-login {} .header-title {
     display: inline;
     margin-left: 20px;
     font-size: 40px;
 }
-
 .main {
     width: 100%;
     height: 100%;
-    
 }
-
 .login-header {
     text-align: right;
 }
-
 .login-container {
     margin-top: 50px;
 }
-
 .add-item-button {
     font-weight: bold;
     text-decoration: none;
@@ -69,49 +67,40 @@ a:active  {color:#000;}  /* selected link   */
     border-bottom: 1px solid #2d88b5;
     border-left: 1px solid #2d88b5;
 }
-
 .button-loc {
     margin-top: 30px;
 }
-
 .category-style {
     height: 600px;
     background-color: #bbdced;
     font-size: 20px;
 }
-
 .category-div {
     margin-bottom: 4px;
     color: #333333;
     text-decoration: none;
     padding-left: 10px;
 }
-
 .items-style {
     height: 600px;
     background-color: #f7f9f9;
     font-size: 20px;
 }
-
 .item-div {
     margin-bottom: 4px;
     padding-left: 10px;
     color: #333333;
     text-decoration: none;
 }
-
 .content-style {
-    background-color: #E9F0B4; 
+    background-color: #E9F0B4;
 }
-
 .edit-delete {
     margin-top: 10px;
 }
-
 .title {
     font-size: 35px;
 }
-
 .content-warpper {
     margin-top: 20px;
     margin-left: 20px;
