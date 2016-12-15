@@ -41,15 +41,10 @@ def showLogin():
     return render_template('login.html', STATE=login_session['state'])
 
 
-@app.route('/a')
-def test():
-    return render_template('base2.html')
-
-
 @app.route('/')
 def main():
     categories = session.query(Category).all()
-    items = session.query(Item).all()
+    items = session.query(Item).limit(10).all()
     return render_template('main.html', categories=categories, items=items)
 
 
@@ -88,8 +83,7 @@ def addCategory():
 def items(category_id, item):
     # find the item element which is in the category and named category
     item_elem = session.query(Item).filter_by(
-        category_id=category_id).filter_by(
-            item=item).one()
+        category_id=category_id).filter_by(item=item).one()
 
     creator = getUserInfo(
         item_elem.user_id)
