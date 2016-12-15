@@ -17,6 +17,8 @@ import json
 from flask import make_response
 import requests
 
+from functools import wraps
+
 CLIENT_ID = json.loads(
     open(
         'client_secrets.json',
@@ -31,6 +33,16 @@ Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
+
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'username' in login_session:
+            return f(*args, **kwargs)
+        else:
+            flash("You need to login")
+            return redirect('/login')
+    return decorated_function
 
 @app.route('/login')
 def showLogin():
@@ -60,11 +72,8 @@ def catalog(category):
 
 
 @app.route('/catalog/addcat', methods=['GET', 'POST'])
+@login_required
 def addCategory():
-    if 'username' not in login_session:
-        flash("You have to login to add item")
-        return redirect('/login')
-
     if request.method == 'POST':
         name = request.form['title']
         if not name:
@@ -107,11 +116,8 @@ def items(category_id, item):
 
 
 @app.route('/catalog/add', methods=['GET', 'POST'])
+@login_required
 def addItem():
-    if 'username' not in login_session:
-        flash("You have to login to add item")
-        return redirect('/login')
-
     if request.method == 'POST':
         category = request.form['category']
         item = request.form['title']
@@ -152,62 +158,72 @@ def addItem():
 @app.route(
     '/catalog/<string:category>/<string:item>/edit',
     methods=['GET', 'POST'])
+@login_required
 def editItem(category, item):
-    if 'username' not in login_session:
-        flash("You have to login to edit item")
-        return redirect('/login')
-
     categories = session.query(Category).all()
 
     editedItem = session.query(Item).filter_by(
         category_id=category).filter_by(
             item=item).one()
-    if request.method == 'POST':
-        if request.form['title']:
-            editedItem.item = request.form['title']
-        if request.form['description']:
-            editedItem.content = request.form['description']
-        if request.form['category']:
-            editedItem.category_id = request.form['category']
 
-        flash("item '%s' has been edited" % request.form['title'])
+    # if the user made the post, 
+    creator = getUserInfo(editedItem.user_id)
+    if creator is not None:
+        if creator.id != login_session['user_id']:
+            flash("You can't edit the others' item")
+            redirect(url_for('main'))
+        else:
+            # if the user made the post,
+            if request.method == 'POST':
+                if request.form['title']:
+                    editedItem.item = request.form['title']
+                if request.form['description']:
+                    editedItem.content = request.form['description']
+                if request.form['category']:
+                    editedItem.category_id = request.form['category']
 
-        return redirect(url_for(
-            'items',
-            category_id=request.form['category'],
-            item=editedItem.item))
-    else:
-        return render_template(
-            'item_edit.html',
-            categories=categories,
-            item=editedItem)
+                flash("item '%s' has been edited" % request.form['title'])
+
+                return redirect(url_for(
+                    'items',
+                    category_id=request.form['category'],
+                    item=editedItem.item))
+            else:
+                return render_template(
+                    'item_edit.html',
+                    categories=categories,
+                    item=editedItem)
 
 
 @app.route(
     '/catalog/<string:category>/<string:item>/delete',
     methods=['GET', 'POST'])
+@login_required
 def deleteItem(category, item):
-    if 'username' not in login_session:
-        flash("You have to login to delete item")
-        return redirect('/login')
-
-    if request.method == 'POST':
-        item_elem = session.query(Item).filter_by(
+    item_elem = session.query(Item).filter_by(
             category_id=category).filter_by(
                 item=item).one()
+     # if the user made the post, 
+    creator = getUserInfo(item_elem.user_id)
+    if creator is not None:
+        if creator.id != login_session['user_id']:
+            flash("You can't edit the others' item")
+            redirect(url_for('main'))
+        else:
+            if request.method == 'POST':
 
-        category_id = item_elem.category_id
+                category_id = item_elem.category_id
 
-        session.delete(item_elem)
-        session.commit()
+                session.delete(item_elem)
+                session.commit()
 
-        flash("item '%s' has been deleted" % item_elem.item)
-        return redirect(
-            url_for(
-                'catalog',
-                category=category_id))
-    else:
-        return render_template('item_delete.html')
+                flash("item '%s' has been deleted" % item_elem.item)
+                return redirect(
+                    url_for(
+                        'catalog',
+                        category=category_id))
+            else:
+                return render_template('item_delete.html')
 
 
 @app.route('/catalog.json')
@@ -218,6 +234,28 @@ def mainJSON():
     return jsonify(
         Items=[i.serialize for i in items],
         Categories=[c.serialize for c in categories])
+
+
+@app.route('/item.json')
+def itemsJSON():
+    items = session.query(Item).all()
+
+    return jsonify(
+        Items=[i.serialize for i in items])
+
+
+@app.route('/<string:category>/JSON')
+def itemsOnJSON(category):
+    items = session.query(Item).filter_by(category_id=category).all()
+    return jsonify(
+        Items=[i.serialize for i in items])
+
+
+@app.route('/<string:category>/<string:item>/JSON')
+def itemOnCatJSON(category, item):
+    items = session.query(Item).filter_by(category_id=category).filter_by(item=item).all()
+    return jsonify(
+        Items=[i.serialize for i in items])
 
 
 @app.route('/gconnect', methods=['POST'])
