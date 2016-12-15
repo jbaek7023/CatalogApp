@@ -49,6 +49,25 @@ def catalog(category):
     
     return render_template('items.html', category = category ,categories=categories, items=items)
 
+@app.route('/catalog/addcat', methods=['GET', 'POST'])
+def addCategory():
+    if 'username' not in login_session:
+        flash("You have to login to add item")
+        return redirect('/login')
+
+    if request.method == 'POST':
+        name=request.form['title']
+        if not name:
+            flash('Don\'t forget to enter the name of category')
+            return render_template('add_category.html')
+        newCategory = Category(category=name)
+        session.add(newCategory)
+        session.commit()
+        flash("Category %s has been created" % request.form['title'])
+        return redirect(url_for('catalog' , category = name))    
+    else:
+        return render_template('add_category.html')
+
 @app.route('/catalog/<string:category_id>/<string:item>')
 def items(category_id, item):
     # find the item element which is in the category and named category
@@ -80,14 +99,23 @@ def addItem():
         # check if the category already has the item name
         # further improvement: check the item by using aJax call
         items = session.query(Item).filter_by(category_id=category).filter_by(item=item).all()
+        categories = session.query(Category).all()
         if len(items)>0: 
-            categories = session.query(Category).all()
             flash("The item already exists on the category")
             return render_template('item_add.html', categories=categories)
         else:
+            if not item:
+                flash('Enter the item title!')
+            
+            content = request.form['description']
+            if not content:
+                flash('Enter the item content!')
+            if not item or not content:
+                return render_template('item_add.html', categories=categories)
+                
             newItem = Item(
                 item=item,
-                content=request.form['description'],
+                content=content,
                 category_id = category, 
                 user_id=login_session['user_id'])
             session.add(newItem)
@@ -99,15 +127,15 @@ def addItem():
         categories = session.query(Category).all()
         return render_template('item_add.html', categories=categories)
 
-@app.route('/catalog/<string:item>/edit', methods=['GET', 'POST'])
-def editItem(item):
+@app.route('/catalog/<string:category>/<string:item>/edit', methods=['GET', 'POST'])
+def editItem(category, item):
     if 'username' not in login_session:
         flash("You have to login to edit item")
         return redirect('/login')
 
     categories = session.query(Category).all()
-    editedItem = session.query(Item).filter_by(item=item).one()
 
+    editedItem = session.query(Item).filter_by(category_id=category).filter_by(item=item).one()
     if request.method == 'POST':
         if request.form['title']:
             editedItem.item = request.form['title']
@@ -237,7 +265,6 @@ def gconnect():
     output += '<img src="'
     output += login_session['picture']
     output += ' " style = "width: 300px; height: 300px;border-radius: 150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '
-    # flash("you are now logged in as %s" % login_session['username'])
     return output
 
 @app.route('/fbconnect', methods=['POST'])
@@ -302,7 +329,6 @@ def fbconnect():
     output += login_session['picture']
     output += ' " style = "width: 300px; height: 300px;border-radius: 150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '
 
-    flash("Now logged in as %s" % login_session['username'])
     return output
 
 
@@ -391,10 +417,8 @@ def disconnect():
         del login_session['picture']
         del login_session['user_id']
         del login_session['provider']
-        flash("You have successfully been logged out.")
         return redirect(url_for('main'))
     else:
-        flash("You were not logged in")
         return redirect(url_for('main'))
 
 # Config Footer starts from here

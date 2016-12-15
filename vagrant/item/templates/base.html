@@ -16,19 +16,18 @@
             <div class="col-md-5 title">
                 <a href="{{url_for('main')}}">Catalog App</a>
             </div>
-            <div class="col-md-6">
-
-            </div>
-            <div class="col-md-1">
+            <div class="col-md-7 login-header">
                 {%if 'username' not in session%}
                 <a id="login-button" href="{{url_for('showLogin')}}">Login</a>
                 {%else%}
-                <a href="{{url_for('disconnect')}}">Logout</a>
+                <div>
+                    Hello, {{session.username}} | 
+                    <a href="{{url_for('disconnect')}}">Logout</a>    
+                </div>
+                
                 {%endif%}
             </div>
         </nav>
-        <!-- end of navbar -->
-        
         {%block content%}{%endblock%}
         
     </div>

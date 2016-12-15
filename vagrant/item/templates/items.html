@@ -1,7 +1,9 @@
 {%extends "base.html"%}{%block content%}
 <div class="row">
     <div class="col-md-3 category-style">
-        <h3>Categories</h3>
+        <div class="category-header">
+            <h3>Categories</h3>
+        </div>
         {%for c in categories%}
         <div class="category-div">
             <a href="{{url_for('catalog', category=c.category)}}">
@@ -9,6 +11,9 @@
             </a>
         </div>
         {%endfor%}
+        <div class="button-loc">
+            <a class="add-item-button" href="{{url_for('addCategory')}}">Add Category</a>
+        </div>
     </div>
     <div class="col-md-9 items-style">
         {% with messages = get_flashed_messages() %}
@@ -20,16 +25,19 @@
                 </ul>
             {% endif %}
         {% endwith %}
-
-        <h3>{{category}} Items ({{items.__len__()}} items)</h3>
-        {%for item in items%}
-            <div>
+        <div class="content-header">
+            <h3>'{{category}}' Items ({{items.__len__()}} items)</h3>
+        
+        </div>
+        {%for item in items%}  
+            <div class="item-div">
                 <a href="{{url_for('items', category_id=category, item=item.item,)}}">{{item.item}}</a>
             </div>
             
         {%endfor%}
-        <hr>
-        <a href="{{url_for('addItem')}}">Add Item</a>
+        <div class="button-loc">
+            <a class="add-item-button" href="{{url_for('addItem')}}">Add Item</a>
+        </div>
     </div>
 </div>
     

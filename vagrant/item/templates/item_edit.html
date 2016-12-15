@@ -1,28 +1,45 @@
 {%extends "base.html"%}{%block content%}
     <form method="post">
-        <label>
-            <div>
-                Title
-            </div>
-            <input type="text" name="title" placeholder="Enter Title" value="{{item.item}}">
-        </label>
-
-        <label>
-            <div>
-                Description
-            </div>
-            <textarea name="description" placeholder="Enter Description here">{{item.content}}</textarea> 
-        </label>
-        <label>
-            <div>Category</div>
-            <select name="category">
+        <div class="top-margin"></div>
+        <div class="row">
+            <div class="col-md-2">Title :</div>
+            <div class="col-md-10">
+                <input type="text" name="title" placeholder="Enter Title"  value="{{item.item}}">
+            </div>        
+        </div>
+        <div class="row">
+            <div class="col-md-2">Description :</div>
+            <div class="col-md-10">
+                <textarea name="description" placeholder="Enter Description here">{{item.content}}</textarea> 
+            </div>        
+        </div>
+        <div class="row">
+            <div class="col-md-2">Category</div>
+            <div class="col-md-10">
+                <select name="category">
+                
                 {%for category in categories%}
-                    
-
-                <option {%if category.category == item.category_id %} selected="selected" {%endif%} > {{category.category}}</option>
+                    <option {%if category.category == item.category_id %} selected="selected" {%endif%} > {{category.category}}</option>
                 {%endfor%}
             </select>
-        </label>
-        <input type="submit" value="Submit">
+            </div>   
+        </div>
+        <div class="row">
+            <div class="col-md-2"></div>
+            <div class="col-md-10">
+                <input type="submit" value="Submit"> 
+            </div>
+        </div>
+        
     </form>
+    
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul>
+            {% for message in messages %}
+                <li style="color:red"> <strong> {{ message }} </strong> </li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
 {%endblock%}

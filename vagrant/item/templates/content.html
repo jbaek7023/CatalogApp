@@ -1,25 +1,25 @@
 {%extends "base.html"%}{%block content%}
 <div class="row">
-    <div class="col-md-12">
-        <h3>{{item.item}}</h3>
-        <hr>
-        <div>{{item.content}}</div>
-
-    {% with messages = get_flashed_messages() %}
-        {% if messages %}
-            <ul>
-            {% for message in messages %}
-                <li style="color:red"> <strong> {{ message }} </strong> </li>
-            {% endfor %}
-            </ul>
-        {% endif %}
-    {% endwith %}
-    
-        <div class="edit-delete">
-            <a href="{{url_for('editItem', item= item.item)}}">Edit</a> | <a href="{{url_for('deleteItem', item= item.item)}}">Delete</a>
+    <div class="col-md-12 content-wrapper">
+        <div class="content-header">
+            <h3><a href="{{url_for('items', category_id= item.category_id, item=item.item)}}">{{item.item}}</a></h3>
         </div>
+        <div class="item-div">{{item.content}}
+            <div class="edit-delete">
+                <a href="{{url_for('editItem', item= item.item, category=item.category_id)}}">Edit</a> | <a href="{{url_for('deleteItem', item= item.item)}}">Delete</a>
+            </div>
+        </div>
+
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+        <ul>
+        {% for message in messages %}
+            <li style="color:red"> <strong> {{ message }} </strong> </li>
+        {% endfor %}
+        </ul>
+            {% endif %}
+        {% endwith %}
     </div>
-    
 </div>
 {%endblock%}
 
