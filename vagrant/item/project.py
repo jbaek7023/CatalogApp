@@ -189,14 +189,18 @@ def editItem(category, item):
             item=editedItem)
 
 
-@app.route('/catalog/<string:category>/<string:item>/delete', methods=['GET', 'POST'])
+@app.route(
+    '/catalog/<string:category>/<string:item>/delete',
+    methods=['GET', 'POST'])
 def deleteItem(category, item):
     if 'username' not in login_session:
         flash("You have to login to delete item")
         return redirect('/login')
 
     if request.method == 'POST':
-        item_elem = session.query(Item).filter_by(category_id=category).filter_by(item=item).one()
+        item_elem = session.query(Item).filter_by(
+            category_id=category).filter_by(
+                item=item).one()
 
         category_id = item_elem.category_id
 
@@ -238,13 +242,16 @@ def gconnect():
         oauth_flow.redirect_uri = 'postmessage'
         credentials = oauth_flow.step2_exchange(code)
     except FlowExchangeError:
-        response = make_response(json.dumps('Failed to upgrade the authorization code.'), 401)
+        response = make_response(
+            json.dumps('Failed to upgrade the authorization code.'),
+            401)
         response.headers['Content-Type'] = 'application/json'
         return response
 
     # Check that the access token is valid.
     access_token = credentials.access_token
-    url = ('https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=%s' % access_token)
+    url_source = 'https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=%s'
+    url = (url_source % access_token)
     h = httplib2.Http()
     result = json.loads(h.request(url, 'GET')[1])
     # If there was an error in the access token info, abort.
@@ -256,7 +263,9 @@ def gconnect():
     # Verify that the access token is used for the intended user.
     gplus_id = credentials.id_token['sub']
     if result['user_id'] != gplus_id:
-        response = make_response(json.dumps("Token's user ID doesn't match given user ID."), 401)
+        response = make_response(
+            json.dumps(
+                "Token's user ID doesn't match given user ID."), 401)
         response.headers['Content-Type'] = 'application/json'
         return response
 
@@ -271,7 +280,9 @@ def gconnect():
     stored_credentials = login_session.get('credentials')
     stored_gplus_id = login_session.get('gplus_id')
     if stored_credentials is not None and gplus_id == stored_gplus_id:
-        response = make_response(json.dumps('Current user is already connected.'), 200)
+        response = make_response(
+            json.dumps(
+                'Current user is already connected.'), 200)
         response.headers['Content-Type'] = 'application/json'
         return response
 
@@ -304,7 +315,8 @@ def gconnect():
     output += '!</h1>'
     output += '<img src="'
     output += login_session['picture']
-    output += ' " style = "width: 300px; height: 300px;border-radius: 150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '
+    output += ' " style = "width: 300px; height: 300px;border-radius: 150'
+    output += 'px;-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '
     return output
 
 
@@ -313,7 +325,8 @@ def fbdisconnect():
     facebook_id = login_session['facebook_id']
     # The access token must me included to successfully logout
     access_token = login_session['access_token']
-    url = 'https://graph.facebook.com/%s/permissions?access_token=%s' % (facebook_id, access_token)
+    url_source = 'https://graph.facebook.com/%s/permissions?access_token=%s'
+    url = url_source % (facebook_id, access_token)
     h = httplib2.Http()
     result = h.request(url, 'DELETE')[1]
     return "you have been logged out"
@@ -324,7 +337,9 @@ def gdisconnect():
     credentials_ = login_session.get('credentials')
 
     if credentials_ is None:
-        response = make_response(json.dumps('Current user is not connected.'), 401)
+        response = make_response(
+            json.dumps(
+                'Current user is not connected.'), 401)
         response.headers['Content-Type'] = 'application/json'
         return response
 
