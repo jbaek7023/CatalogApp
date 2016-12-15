@@ -31,6 +31,10 @@ def showLogin():
     login_session['state'] = state
     return render_template('login.html', STATE=login_session['state'])
 
+@app.route('/a')
+def test():
+    return render_template('base2.html')
+
 
 @app.route('/')
 def main():
@@ -48,8 +52,8 @@ def catalog(category):
 @app.route('/catalog/<string:category_id>/<string:item>')
 def items(category_id, item):
     # find the item element which is in the category and named category
-    item_elem = session.query(Item).filter_by(item=item).one() 
-    
+    item_elem = session.query(Item).filter_by(category_id=category_id).filter_by(item=item).one() 
+
     creator = getUserInfo(item_elem.user_id)
 
     # if user didn't log in or the user is not the one who made the item
@@ -64,8 +68,6 @@ def items(category_id, item):
         return render_template('public_content.html', item=item_elem)
 
 
-
-
 @app.route('/catalog/add', methods=['GET', 'POST'])
 def addItem():
     if 'username' not in login_session:
@@ -74,15 +76,25 @@ def addItem():
 
     if request.method == 'POST':
         category = request.form['category']
-        newItem = Item(
-            item=request.form['title'],
-            content=request.form['description'],
-            category_id = category, 
-            user_id=login_session['user_id'])
-        session.add(newItem)
-        session.commit()
-        flash("%s has been created" % request.form['title'])
-        return redirect(url_for('catalog' , category = category))
+        item=request.form['title']
+        # check if the category already has the item name
+        # further improvement: check the item by using aJax call
+        items = session.query(Item).filter_by(category_id=category).filter_by(item=item).all()
+        if len(items)>0: 
+            categories = session.query(Category).all()
+            flash("The item already exists on the category")
+            return render_template('item_add.html', categories=categories)
+        else:
+            newItem = Item(
+                item=item,
+                content=request.form['description'],
+                category_id = category, 
+                user_id=login_session['user_id'])
+            session.add(newItem)
+            session.commit()
+            flash("%s has been created" % request.form['title'])
+            return redirect(url_for('catalog' , category = category))
+        
     else:
         categories = session.query(Category).all()
         return render_template('item_add.html', categories=categories)
@@ -217,8 +229,6 @@ def gconnect():
     if not user_id:
         user_id = createUser(login_session)
     login_session['user_id'] = user_id
-
-
 
     output = ''
     output += '<h1>Welcome, '

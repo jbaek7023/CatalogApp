@@ -1,8 +1,10 @@
 {%extends "base.html"%}{%block content%}
-<div class="content-style">
-    <h3>{{item.item}}</h3>
-    <hr>
-    <div>{{item.content}}</div>
+<div class="row content-style">
+    <div class="col-md-12">
+        <h3>{{item.item}}</h3>
+    </div>
+    <div class="col-md-12">
+        <div>{{item.content}}</div>
 
     {% with messages = get_flashed_messages() %}
         {% if messages %}
@@ -13,5 +15,15 @@
             </ul>
         {% endif %}
     {% endwith %}
+    
+        <div class="col-md-2">
+            <a href="{{url_for('editItem', item= item.item)}}">Edit</a> | <a href="{{url_for('deleteItem', item= item.item)}}">Delete</a>
+        </div>
+        <div class="col-md-10">
+            
+        </div>
+    </div>
+
+    
 </div>
 {%endblock%}

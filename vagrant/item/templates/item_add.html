@@ -23,4 +23,13 @@
         </label>
         <input type="submit" value="Submit">
     </form>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul>
+            {% for message in messages %}
+                <li style="color:red"> <strong> {{ message }} </strong> </li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
 {%endblock%}

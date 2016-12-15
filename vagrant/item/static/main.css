@@ -3,43 +3,28 @@ html {
 
 }
 body {
-    font-family: 'Space Mono', Arial, sans-serif;
-    font-size: 18px;
-    box-sizing: border-box;
-    margin: auto;
-    margin: 30px;
-    background-color: #DEDFD7;
+    font-family: 'Space Mono', sans-serif;
 }
 
 nav {
     /*green 80%*/
-    background-color: #99ff99;
+    background-color: #2d88b5;
     font-size: 20px;
-
-    padding-top: 20px;
-    padding-bottom: 20px;
-    
-
-    width: 100%;
-    min-width: 220px;
-    max-width:1000px;
+    height: 50px;
 }
 
-.login-button {
-    font: bold 11px Arial;
-    text-decoration: none;
-    background-color: #EEEEEE;
-    color: #333333;
-    padding: 2px 6px 2px 6px;
-    border-top: 1px solid #CCCCCC;
-    border-right: 1px solid #333333;
-    border-bottom: 1px solid #333333;
-    border-left: 1px solid #CCCCCC;
+a:link    {color:#000;}  /* unvisited link  */
+a:visited {color:#000;}  /* visited link    */
+a:hover   {color:#000;}  /* mouse over link */
+a:active  {color:#000;}  /* selected link   */ 
 
-    display: inline;
-    float: right;
+.category-header {
+    border-bottom: 1px solid #2d88b5;
+}
 
-    margin-right: 20px;
+.content-header {
+    border-bottom: 1px solid #2d88b5;
+    padding-left: 10px;
 }
 
 .google-login {
@@ -60,70 +45,55 @@ nav {
 }
 
 .add-item-button {
-    font: bold 11px Arial;
+    font-weight: bold;
     text-decoration: none;
     background-color: #EEEEEE;
     color: #333333;
     padding: 2px 6px 2px 6px;
-    border-top: 1px solid #CCCCCC;
-    border-right: 1px solid #333333;
-    border-bottom: 1px solid #333333;
-    border-left: 1px solid #CCCCCC;
+    border-top: 1px solid #2d88b5;
+    border-right: 1px solid #2d88b5;
+    border-bottom: 1px solid #2d88b5;
+    border-left: 1px solid #2d88b5;
+}
+
+.button-loc {
+    margin-top: 30px;
 }
 
 .category-style {
-
-    width: 20%;
     height: 600px;
-    float: left;
-    background-color: #E8AEAE; 
+    background-color: #bbdced;
+    font-size: 20px;
+    text-align: center;
+}
 
-    margin-top: 20px;
-    margin-bottom: 20px;
-    padding: 20px;
-    content-height: 500px;
-
-    min-width: 200px;
-    max-width: 385px;
-    display: inline-block;
+.category-div {
+    margin-bottom: 4px;
+    color: #333333;
+    text-decoration: none;
 }
 
 .items-style {
-
-    width: 71%;
     height: 600px;
-    float: left;
-    margin-left: 15px;
+    background-color: #f7f9f9;
+    font-size: 20px;
+}
 
-
-    background-color: #E9F0B4; 
-    padding: 20px;
-
-    margin-top: 20px;
-    margin-bottom: 20px;
-
-    min-width: 200px;
-    max-width: 600px;
-
-    display: inline-block;
+.item-div {
+    margin-bottom: 4px;
+    padding-left: 10px;
+    color: #333333;
+    text-decoration: none;
 }
 
 .content-style {
-    width: 100%;
-
     background-color: #E9F0B4; 
-    padding: 20px;
-
-    margin-top: 20px;
-    margin-bottom: 20px;
-
-    min-width: 200px;
-    max-width: 960px;
-
-    margin-right: 20px;
-
 }
 
 .edit-delete {
-    display: inline;
+    
+}
+
+.title {
+    font-size: 35px;
 }

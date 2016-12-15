@@ -1,8 +1,9 @@
 {%extends "base.html"%}{%block content%}
-<div class="content-style">
-    <h3>{{item.item}}</h3>
-    <hr>
-    <div>{{item.content}}</div>
+<div class="row">
+    <div class="col-md-12">
+        <h3>{{item.item}}</h3>
+        <hr>
+        <div>{{item.content}}</div>
 
     {% with messages = get_flashed_messages() %}
         {% if messages %}
@@ -14,8 +15,12 @@
         {% endif %}
     {% endwith %}
     
-    <div class="edit-delete">
-        <a href="{{url_for('editItem', item= item.item)}}">Edit</a> | <a href="{{url_for('deleteItem', item= item.item)}}">Delete</a>
+        <div class="edit-delete">
+            <a href="{{url_for('editItem', item= item.item)}}">Edit</a> | <a href="{{url_for('deleteItem', item= item.item)}}">Delete</a>
+        </div>
     </div>
+    
 </div>
 {%endblock%}
+
+<!-- content-style edit-delete -->

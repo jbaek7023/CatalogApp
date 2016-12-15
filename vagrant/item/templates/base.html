@@ -5,38 +5,35 @@
     <meta charset="utf-8">
     <link href="https://fonts.googleapis.com/css?family=Aref+Ruqaa|Space+Mono" rel="stylesheet">
     <link rel="stylesheet" href="{{url_for('static', filename='main.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='bootstrap.css')}}">
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
     <script src="//apis.google.com/js/platform.js?onload=start"></script>
+
 </head>
 <body>
-    <nav>
-        <div class="header-title">
-            <a href="{{url_for('main')}}">Catalog App</a>
-            
-            {%if 'username' not in session%}
-            <a id="login-button" href="{{url_for('showLogin')}}">Login</a>
-            {%else%}
-            <a href="{{url_for('disconnect')}}">Logout</a>
-            {%endif%}
-        </div>
-        <!-- <a class="login-button" href="">Login</a> -->
-        
-    </nav>
-    <div class="flash">
-        {% with messages = get_flashed_messages() %}
-        {% if messages %}
-            <ul>
-            {% for message in messages %}
-                <li style="color:red"> <strong> {{ message }} </strong> </li>
-            {% endfor %}
-            </ul>
-        {% endif %}
-    {% endwith %}
-    </div>
+    <div class="container">
+        <nav class="row">
+            <div class="col-md-5 title">
+                <a href="{{url_for('main')}}">Catalog App</a>
+            </div>
+            <div class="col-md-6">
 
-    <div class="main">
-        {%block content%}{%endblock%}    
+            </div>
+            <div class="col-md-1">
+                {%if 'username' not in session%}
+                <a id="login-button" href="{{url_for('showLogin')}}">Login</a>
+                {%else%}
+                <a href="{{url_for('disconnect')}}">Logout</a>
+                {%endif%}
+            </div>
+        </nav>
+        <!-- end of navbar -->
+        
+        {%block content%}{%endblock%}
+        
     </div>
+    
+    
     
 
 </body>
