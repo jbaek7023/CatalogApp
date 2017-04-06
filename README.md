@@ -1,7 +1,19 @@
 Catalog App
 =============
+Catalog App is a RESTful web application using the Python framework 'Flask' along with implementing third-party OAuth authentication. 
+I Learned when to properly use the various HTTP methods available and how these methods relate to CRUD (create, read, update and delete) operations.
 
-## How to Setup
+## Key Feature
+#### Login with Google or Facebook
+![1](video/login.gif)
+
+#### Add Item
+![2](video/item.gif)
+
+#### Retrieve JSON data
+![3](video/json-endpoint.gif)
+
+## Setup (Essential before running the server)
 1. install [Vagrant](https://www.vagrantup.com/) and [VirtualBox](https://www.virtualbox.org/wiki/Downloads?replytocom=98578)
 
 2. install the appropriate version of package by typing things below on your terminal
@@ -11,16 +23,17 @@ $ pip install flask==0.9
 $ pip install Flask-Login==0.1.3
 ```
 
-## How to Run 
+## Run 
 1. clone the whole file
 
 2. navigate to the folder which contains the file
 
 3. Open your terminal in the folder and type below 
 ```
+$ cd vagrant
 $ vagrant up
 $ vagrant ssh"
-$ cd /vagrant/project.py
+$ cd /vagrant/item/project.py
 ```
 6. set up your database by typing "python db_setup.py"
 
