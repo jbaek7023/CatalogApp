@@ -3,7 +3,10 @@ Catalog App
 Catalog App is a RESTful web application using the Python framework 'Flask' along with implementing third-party OAuth authentication. 
 I Learned when to properly use the various HTTP methods available and how these methods relate to CRUD (create, read, update and delete) operations.
 
-## Key Feature
+
+
+
+## Key Features
 #### Login with Google or Facebook
 ![1](video/login.gif)
 
@@ -24,7 +27,7 @@ $ pip install Flask-Login==0.1.3
 ```
 
 ## Run 
-1. clone the whole file
+1. clone the whole project file
 
 2. navigate to the folder which contains the file
 
